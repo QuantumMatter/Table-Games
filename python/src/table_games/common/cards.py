@@ -79,3 +79,26 @@ class Deck:
                 cards.append(Card(suit.value, value.value))
 
         return Deck(cards)
+    
+
+suit_map = {
+    'C': CSuit.CLUBS.value,
+    'S': CSuit.SPADES.value,
+    'H': CSuit.HEARTS.value,
+    'D': CSuit.DIAMONDS.value
+}
+value_map = {
+    'A': CValue.ACE.value,
+    'K': CValue.KING.value,
+    'Q': CValue.QUEEN.value,
+    'J': CValue.JACK.value,
+    'T': CValue.TEN.value,
+    '9': CValue.NINE.value,
+    '8': CValue.EIGHT.value,
+    '7': CValue.SEVEN.value,
+    '6': CValue.SIX.value,
+    '5': CValue.FIVE.value,
+    '4': CValue.FOUR.value,
+    '3': CValue.THREE.value,
+    '2': CValue.TWO.value
+}

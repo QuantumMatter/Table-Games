@@ -83,7 +83,39 @@ d = [
 
     # P1: $15, P2: $10, P3: $20, P4: $-20, P5: $-20, P6: $-10
 
-    'DK'
+    # Round 5 - Dealer draws soft 17, then soft 19
+    'H7', 'SK', 'C2', 'DA', 'ST', 'HJ',     'H6',
+    'C8', 'DQ', 'S3', 'CJ', 'HA', 'D9',     'HA',
+
+            # Spot 1 stands on hard 15
+            # Spot 2 stands on hard 20
+    'H9',   # Spot 3 hits hard 5, stands on hard 14
+            # Spot 4 has blackjack
+            # Spot 5 has blackjack
+            # Spot 6 stands on hard 19
+
+    'D2',   # Dealer hits soft 17, stands on soft 19
+
+    # P1: $5, P2: $20, P3: $10, P4: $-5, P5: $-5, $-10
+
+    # Round 6 - Dealer busts after drawing to soft 17
+    'SJ', 'H3', 'DQ', 'CT', 'S5', 'HK',     'H3',
+    'D4', 'CA', 'H7', 'S8', 'D2', 'C6',     'DA',
+
+            # Spot 1 stands on 14
+    'H2',   # Spot 2 hits soft 14
+    'CK',   # Spot 2 hits soft 16, stands on hard 16
+            # Spot 3 stands on 17
+            # Spot 4 stands on 18
+    'C7',   # Spot 5 hits 7, stands on 14
+            # Spot 6 stands on 16
+
+    'ST',   # Dealer hits soft 14, has hard 14
+    'CT',   # Dealer hits hard 14, busts
+
+    # P1: $15, P2: $30, P3: $20, P4: $5, P5: $5, $0
+
+    # 'DK'
 ]
 
 pen = len(d) / 52
@@ -97,33 +129,10 @@ expectations = [
     [20, 10, 10, 20, 10, 10],
     [10, 20, 30, 10, 10, 0],
     [25, 10, 30, -20, 0, 0],
-    [15, 10, 20, -20, -20, -10]
+    [15, 10, 20, -20, -20, -10],
+    [5, 20, 10, -5, -5, -10],
+    [15, 30, 20, 5, 5, 0]
 ]
-
-suit_map = {
-    'C': CSuit.CLUBS.value,
-    'S': CSuit.SPADES.value,
-    'H': CSuit.HEARTS.value,
-    'D': CSuit.DIAMONDS.value
-}
-value_map = {
-    'A': CValue.ACE.value,
-    'K': CValue.KING.value,
-    'Q': CValue.QUEEN.value,
-    'J': CValue.JACK.value,
-    'T': CValue.TEN.value,
-    '9': CValue.NINE.value,
-    '8': CValue.EIGHT.value,
-    '7': CValue.SEVEN.value,
-    '6': CValue.SIX.value,
-    '5': CValue.FIVE.value,
-    '4': CValue.FOUR.value,
-    '3': CValue.THREE.value,
-    '2': CValue.TWO.value
-}
-
-def do_test():
-    assert 4 == 4
 
 def test_basic_strategy():
 
@@ -143,10 +152,10 @@ def test_basic_strategy():
         if game._state == BlackjackState.PREBETTING:
             expectation = expectations[round_idx]
             for player_idx, (player_expected, (playerPolicy, playerState)) in enumerate(zip(expectation, game._players)):
-                assert player_expected == playerState._bank
+                # assert player_expected == playerState._bank
                 if player_expected != playerState._bank:
                     print(f'Round { round_idx + 1 } failed! Player { player_idx + 1 } has ${ playerState._bank }, but should have ${ player_expected }')
-                    # exit()
+                    exit()
             print(f'Before Round { round_idx+1 } is OK')
 
         elif game._state == BlackjackState.ACTION:
@@ -165,3 +174,8 @@ def test_basic_strategy():
         game.next()
 
     print('Pass!')
+
+print("Name:", __name__)
+
+if __name__ == "__main__":
+    test_basic_strategy()

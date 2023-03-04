@@ -116,9 +116,10 @@ def best_total(cards, against=17):
     soft = soft_total(cards)
     if soft > 21: return hard
     if hard > 21: return hard
-    if hard > against: return hard
-    if soft > against: return soft
-    if soft > 21: return hard
+    if hard >= against: return hard
+    if soft >= against: return soft
+    return hard
+    raise Exception()
     return hard if (hard >= 17) else soft
 
 def is_blackjack(cards):
@@ -185,7 +186,7 @@ class Blackjack:
                     if type(action) is PlayerSpreadAction:
                         desired_spots = action.spots
 
-                        print(f"Desired spots: { desired_spots }")
+                        # print(f"Desired spots: { desired_spots }")
 
                         if desired_spots > (MAX_PLAYERS // len(self._players)):
                             return False
@@ -337,7 +338,7 @@ class Blackjack:
                 else:
                     self._dealer.append(self._deck.draw())
 
-            dealer_total = best_total(self._dealer)
+            dealer_total = best_total(self._dealer, 18)
 
             for playerPolicy, playerState in self._players:
                 for spot in playerState._spots:

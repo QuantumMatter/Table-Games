@@ -19,11 +19,11 @@ basic_strategy = {
         20: ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], # A9
         19: ['S', 'S', 'S', 'S', 'DS', 'S', 'S', 'S', 'S', 'S'], # A8
         18: ['DS', 'DS', 'DS', 'DS', 'DS', 'S', 'S', 'H', 'H', 'H'], # A7
-        17: ['S', 'DH', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A6
-        16: ['S', 'S', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A5
-        15: ['S', 'S', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A4
-        14: ['S', 'S', 'S', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A3
-        13: ['S', 'S', 'S', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A2
+        17: ['H', 'DH', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A6
+        16: ['H', 'H', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A5
+        15: ['H', 'H', 'DH', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A4
+        14: ['H', 'H', 'H', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A3
+        13: ['H', 'H', 'H', 'DH', 'DH', 'H', 'H', 'H', 'H', 'H'], # A2
     },
     'pairs': {
         #     2    3    4    5    6    7    8    9   10    A
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
-    for _ in range(600000):
+    for _ in range(6 * 100 * 10000):
         if not game.next():
             raise Exception()
         
