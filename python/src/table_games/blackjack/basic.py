@@ -84,7 +84,7 @@ class BasicPolicy(PlayerPolicy):
                 if not submit(SpotSplitAction()): raise Exception()
                 return
         
-        if (soft <= 21) and (has_ace(spot._cards)):
+        if (soft <= 21) and (has_ace(spot._cards)) and (soft != hard):
             soft = max(13, soft)
             soft = min(soft, 20)
             action = basic_strategy['soft'][soft][column]
@@ -103,16 +103,59 @@ class BasicPolicy(PlayerPolicy):
                     submit(SpotHitAction())
                 else:
                     raise Exception()
+                
+
+class TestOutPolicy(PlayerPolicy):
+
+    @classmethod
+    def PrebetAction(cls, player: PlayerState, submit):
+        submit(PlayerSpreadAction(1))
+
+    @classmethod
+    def Bet(cls, player: PlayerState, submit):
+        submit(10)
+    
+    @classmethod
+    def InsuranceAction(cls, player: PlayerState) -> bool:
+        return False
+
+    @classmethod
+    def Action(cls, player: PlayerState, spot: SpotState, up_card: Card, submit):
+        def cli_submit(cli_action):
+
+            def basic_submit(basic_action):
+                if type(cli_action) != type(basic_action):
+                    print('Wrong choice!')
+
+                return submit(cli_action)
+
+            BasicPolicy.Action(player, spot, up_card, basic_submit)
+            return True
+
+        CLIPlayer.Action(player, spot, up_card, cli_submit)
 
 
 if __name__ == "__main__":
 
+    from tqdm import tqdm
+
     game = Blackjack(6, True, 5, 5, 100)
+    # game.add_player(TestOutPolicy())
+
+    # while game.next():
+    #     if game._state == BlackjackState.PREBETTING:
+    #         print(f'You have ${ game._players[0][1]._bank }')
+    #     elif game._state == BlackjackState.ACTION:
+    #         print(f'Dealer is showing: { game._dealer[0] }')
+        
+
+    # exit()
+
     game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
-    for _ in range(6 * 100 * 10000):
+    for _ in tqdm(range(6 * 100 * 500 * 20 * 10)):
         if not game.next():
             raise Exception()
         

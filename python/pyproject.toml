@@ -23,7 +23,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "tqdm"
+]
 dynamic = ["version"]
 
 [project.urls]

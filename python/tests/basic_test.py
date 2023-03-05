@@ -113,7 +113,109 @@ d = [
     'ST',   # Dealer hits soft 14, has hard 14
     'CT',   # Dealer hits hard 14, busts
 
-    # P1: $15, P2: $30, P3: $20, P4: $5, P5: $5, $0
+    # P1: $15, P2: $30, P3: $20, P4: $5, P5: $5, P6: $0
+
+    # Round 7 - Pushes against soft total
+    'C9', 'DK', 'C3', 'HJ', 'S4', 'HA',     'C7',
+    'DT', 'H6', 'SQ', 'D7', 'H5', 'C2',     'CA',
+
+            # Spot 1 stands on 19
+    'SA',   # Spot 2 hits 16, stands on 17
+    'D6',   # Spot 3 hits 13, stands on 19,
+            # Spot 4 stands on 17
+    'H8',   # Spot 5 hits 9, stands on 17
+    'D5',   # Spot 6 hits soft 13, stands on soft 18
+
+    # P1: $25, P2: $20, P3: $30, P4: $-5, P5: $-5, P6: $0
+    
+    # Round 8 - Pairs against low up card
+    'C2', 'D3', 'H4', 'S5', 'C6', 'H7',     'D4',
+    'C2', 'D3', 'H4', 'S5', 'C6', 'H7',     'D4',
+
+            # Spot 1 splits 2's
+    'C8',   # Spot 1(a) is dealt 8, has 10
+    'H9',   # Spot 1(a) doubles on 10, stands on 19
+    'C6',   # Spot 1(b) is dealt 6, has 8
+    'CT',   # Spot 1(b) hits 8, stands on 18
+            # Spot 2 splits 3's
+    'CJ',   # Spot 2(a) is dealt 10, stands on 13
+    'H4',   # Spot 2(b) is dealt 4
+    'SK',   # Spot 2(b) hits 7, stands on 17
+    'S7',   # Spot 3 hits 8, stands on 15
+    'HQ',   # Spot 4 doubles on 10, stands on 20
+            # Spot 5 splits 6's
+    'S2',   # Spot 5(a) is dealt 2, has 8
+    'HT',   # Spot 5(a) hits 8, stands on 18
+    'D9',   # Spot 5(b) is dealt 9, stands on 15
+            # Spot 6 splits 7's
+    'D3',   # Spot 6(a) is dealt 3, has 10
+    'C4',   # Spot 6(a) doubles on 10, stands on 14
+    'C8',   # Spot 6(b) is dealt 15, stands on 15
+
+    'DA',   # Dealer hits 8, stands on soft 19
+
+    # P1: $15, P2: $0, P3: $20, P4: $15, P5: $-25, P6: $-30
+
+    # Round 9 - Pairs against high up card
+    'CT', 'D9', 'H8', 'S7', 'C6', 'H5',     'D8',
+    'CT', 'D9', 'H8', 'S7', 'C6', 'H5',     'D8',
+
+            # Spot 1 stands on 20
+            # Spot 2 splits 9's
+    'S6',   # Spot 2(a) is dealt 6, has 15
+    'H9',   # Spot 2(a) hits 15, busts with 24
+    'HK',   # Spot 2(b) dealt 10, stands on 19
+            # Spot 3 splits 8's
+    'H7',   # Spot 3(a) is dealt 7, has 15
+    'CQ',   # Spot 3(a) hits 15, busts with 25
+    'H3',   # Spot 3(b) is dealt 3, has 11
+    'ST',   # Spot 3(b) doubles on 11, stands on 21
+    'S5',   # Spot 4 hits 14, stands on 19
+    'D8',   # Spot 5 hits 12, stands on 20
+    'H2',   # Spot 6 doubles on 10, stands on 12
+
+    'H3',   # Dealer hits 16, stands on 19
+
+    # P1: $25, P2: $-10, P3: $30, P4: $15, P5: $-15, P6: $-50
+
+    # Round 10 - Low soft totals aginst low up card
+    'CA', 'CA', 'CA', 'CA', 'CA', 'CA',     'D4',
+    'C2', 'C3', 'C4', 'C5', 'C6', 'C7',     'DT',
+
+    'H5',   # Spot 1 hits soft 13, stands on soft 18
+    'HA',   # Spot 2 hits soft 14, has soft 15
+    'C6',   # Spot 2 hits soft 15, stands on soft 21
+    'C7',   # Spot 3 doubles soft 15, stands on hard 12
+    'S3',   # Spot 4 doubles soft 16, stands on soft 19
+    'SJ',   # Spot 5 doubles soft 17, stands on hard 17
+    'S8',   # Spot 6 doubles on soft 18, stands on hard 16
+
+    'S4',   # Dealer hits 14, stands on 18
+
+    # P1: $25, P2: $0, P3: $10, P4: $35, P5: $-35, P6: $-70
+
+    # Round 11 - Low totals that cannot double
+    'C2', 'D3', 'D5', 'D4', 'D6', 'D5',     'S6',
+    'C4', 'D4', 'D2', 'D3', 'D2', 'D3',     'H5',
+
+    'H3',   # Spot 1 hits 6, has 9
+    'HA',   # Spot 1 hits 9, stands on soft 20
+    'S3',   # Spot 2 hits 7, has 10
+    'H6',   # Spot 2 hits 10, stands on 16
+    'S4',   # Spot 3 hits 7, has 11
+    'DK',   # Spot 3 hits 11, stands on 21
+    'S2',   # Spot 4 hits 7, has 9
+    'S9',   # Spot 4 hits 9, stands on 18
+    'S2',   # Spot 5 hits 8, has 10
+    'HQ',   # Spot 5 hits 10, stands on 20
+    'S3',   # Spot 6 hits 8, has 11
+    'D2',   # Spot 6 hits 11, stands on 13
+    
+
+    'S4',   # Dealer hits 11, has 15
+    'S2',   # Dealer hits 15, stands on 17
+
+    # P1: $35, P2: $-10, P3: $20, P4: $45, P5: $-25, P6: $-80
 
     # 'DK'
 ]
@@ -131,7 +233,12 @@ expectations = [
     [25, 10, 30, -20, 0, 0],
     [15, 10, 20, -20, -20, -10],
     [5, 20, 10, -5, -5, -10],
-    [15, 30, 20, 5, 5, 0]
+    [15, 30, 20, 5, 5, 0],
+    [25, 20, 30, -5, -5, 0],
+    [15, 0, 20, 15, -25, -30],
+    [25, -10, 30, 15, -15, -50],
+    [25, 0, 10, 35, -35, -70],
+    [35, -10, 20, 45, -25, -80]
 ]
 
 def test_basic_strategy():

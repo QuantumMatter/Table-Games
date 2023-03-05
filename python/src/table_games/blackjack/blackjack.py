@@ -98,6 +98,7 @@ def hard_total(cards: List[Card]):
     return sum(map(lambda card: min(card._value, 10), cards))
 
 def soft_total(cards: List[Card]):
+    return best_total(cards)
     total = hard_total(cards)
 
     has_ace = False
@@ -112,15 +113,28 @@ def soft_total(cards: List[Card]):
     return total
 
 def best_total(cards, against=17):
-    hard = hard_total(cards)
-    soft = soft_total(cards)
-    if soft > 21: return hard
-    if hard > 21: return hard
-    if hard >= against: return hard
-    if soft >= against: return soft
-    return hard
-    raise Exception()
-    return hard if (hard >= 17) else soft
+    total = 0
+    aces = 0
+    for card in cards:
+        total += min(card._value, 10)
+        if card._value == 1:
+            aces += 1
+            total += 10
+
+    while aces > 0 and total > 21:
+        total -= 10
+        aces -= 10
+
+    return total
+    # hard = hard_total(cards)
+    # soft = soft_total(cards)
+    # if soft > 21: return hard
+    # if hard > 21: return hard
+    # if hard >= against: return hard
+    # if soft >= against: return soft
+    # return hard
+    # raise Exception()
+    # return hard if (hard >= 17) else soft
 
 def is_blackjack(cards):
     if len(cards) != 2: return False
@@ -240,7 +254,7 @@ class Blackjack:
                             spot._insured = True
 
             if is_blackjack(self._dealer):
-                print('Dealer has a blackjack!')
+                # print('Dealer has a blackjack!')
                 for playerPolicy, playerState in self._players:
                     for spot in playerState._spots:
                         if spot._insured:
@@ -265,9 +279,9 @@ class Blackjack:
                         if not has_action:
                             spot_idx.value += 1
                             continue
-                    elif len(spot._cards) == 2 and soft_total(spot._cards) == 21:
-                        print(f"{ spot._cards }")
-                        print("Blackjack!")
+                    elif is_blackjack(spot._cards):
+                        # print(f"{ spot._cards }")
+                        # print("Blackjack!")
                         spot_idx.value += 1
                         continue
 
@@ -278,23 +292,23 @@ class Blackjack:
 
                         def submit(action: SpotAction) -> bool:
                             if type(action) is SpotStandAction:
-                                print(f'STAND on { spot._cards } vs { self._dealer[0] }')
+                                # print(f'STAND on { spot._cards } vs { self._dealer[0] }')
                                 done.value = True
                                 return True
                             elif type(action) is SpotHitAction:
-                                print(f'HIT on { spot._cards } vs { self._dealer[0] }')
+                                # print(f'HIT on { spot._cards } vs { self._dealer[0] }')
                                 spot.dealt(self._deck.draw())
                                 if hard_total(spot._cards) > 21:
-                                    print(f"You drew a { spot._cards[-1] } and busted!")
+                                    # print(f"You drew a { spot._cards[-1] } and busted!")
                                     done.value = True
                                 return True
                             elif type(action) is SpotDoubleAction:
                                 if len(spot._cards) != 2: return False
                                 if spot._split == True and self._das == False: return False
 
-                                print(f'DOUBLE on { spot._cards } vs { self._dealer[0] }')
+                                # print(f'DOUBLE on { spot._cards } vs { self._dealer[0] }')
                                 spot.dealt(self._deck.draw())
-                                print(f"You drew a { spot._cards[-1] }!")
+                                # print(f"You drew a { spot._cards[-1] }!")
                                 playerState._bank -= spot._bet
                                 spot._bet *= 2
                                 
@@ -306,7 +320,7 @@ class Blackjack:
                                 b_val = min(10, spot._cards[1]._value)
                                 if a_val != b_val: return False
 
-                                print(f'SPLIT on { spot._cards } vs { self._dealer[0] }')
+                                # print(f'SPLIT on { spot._cards } vs { self._dealer[0] }')
                                 new_spot = SpotState()
                                 new_spot._bet = spot._bet
                                 playerState._bank -= new_spot._bet
@@ -326,35 +340,49 @@ class Blackjack:
             self._state = BlackjackState.RESULTS
 
         elif self._state == BlackjackState.RESULTS:
-            
-            while True:
-                hard = hard_total(self._dealer)
-                soft = soft_total(self._dealer)
 
-                if hard >= 17:
-                    break
-                elif soft <= 21 and soft >= 18:
-                    break
-                else:
-                    self._dealer.append(self._deck.draw())
+            must_draw = False
+            for playerPolicy, playerState in self._players:
+                for spot in playerState._spots:
+                    if is_blackjack(spot._cards): continue
+                    if best_total(spot._cards) > 21: continue
+                    must_draw = True
+            
+            if must_draw:
+                while True:
+                    hard = hard_total(self._dealer)
+                    soft = soft_total(self._dealer)
+
+                    if hard >= 17:
+                        break
+                    elif soft <= 21 and soft >= 18:
+                        break
+                    else:
+                        self._dealer.append(self._deck.draw())
 
             dealer_total = best_total(self._dealer, 18)
 
             for playerPolicy, playerState in self._players:
                 for spot in playerState._spots:
                     spot_total = best_total(spot._cards, dealer_total)
-                    if (not spot._split) and (len(spot._cards) == 2) and (soft_total(spot._cards) == 21):
+                    if (not spot._split) and is_blackjack(spot._cards):
                         playerState._bank += (1 + self._bj) * spot._bet
+                        # print(f'[R] {spot_total},{dealer_total},{(1 + self._bj) * spot._bet}\t{spot._cards} vs {self._dealer}')
                     elif spot_total > 21:           # Player busted
+                        # print(f'[R] {spot_total},{dealer_total},{0}\t{spot._cards} vs {self._dealer}')
                         continue
                     elif dealer_total > 21:         # Dealer busted
                         playerState._bank += 2 * spot._bet
+                        # print(f'[R] {spot_total},{dealer_total},{2 * spot._bet}\t{spot._cards} vs {self._dealer}')
                     elif spot_total == dealer_total:# Push
                         playerState._bank += spot._bet
+                        # print(f'[R] {spot_total},{dealer_total},{spot._bet}\t{spot._cards} vs {self._dealer}')
                     elif spot_total < dealer_total: # Lost
+                        # print(f'[R] {spot_total},{dealer_total},{0}\t{spot._cards} vs {self._dealer}')
                         continue
                     elif spot_total > dealer_total:
                         playerState._bank += 2 * spot._bet
+                        # print(f'[R] {spot_total},{dealer_total},{2 * spot._bet}\t{spot._cards} vs {self._dealer}')
                     else:
                         raise Exception()
 
@@ -369,7 +397,7 @@ class Blackjack:
                 playerState._spots.clear()
 
             if (self._deck_count - self._pen) * 52 > len(self._deck):
-                print("Shuffling...")
+                # print("Shuffling...")
                 self._deck = Deck.Standard()
                 for _ in range(self._deck_count - 1):
                     self._deck += Deck.Standard()
