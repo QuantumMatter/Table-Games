@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
-    for _ in tqdm(range(6 * 100 * 500 * 20 * 10)):
+    for _ in tqdm(range(6 * 100 * 500 * 20 * 10 * 5 * 3)):
         if not game.next():
             raise Exception()
         
