@@ -138,6 +138,13 @@ class TestOutPolicy(PlayerPolicy):
 if __name__ == "__main__":
 
     from tqdm import tqdm
+    from argparse import ArgumentParser
+    import sys
+
+    parser = ArgumentParser()
+    parser.add_argument('--actions', action='store_true')
+
+    args = parser.parse_args(sys.argv[1:])
 
     game = Blackjack(6, True, 5, 5, 100)
     # game.add_player(TestOutPolicy())
@@ -155,9 +162,16 @@ if __name__ == "__main__":
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
-    for _ in tqdm(range(6 * 100 * 500 * 20 * 10 * 5 * 3)):
-        if not game.next():
-            raise Exception()
+    if args.actions == True:
+        for _ in tqdm(range(500)):
+            for idx in range (6 * 100 * (150000 // 500)):
+                if not game.next():
+                    raise Exception()
+            
+    else:
+        for _ in tqdm(range(6 * 100 * 500 * 20 * 10 * 5 * 3)):
+            if not game.next():
+                raise Exception()
         
     print('Done!')
 
