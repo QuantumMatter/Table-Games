@@ -1,4 +1,3 @@
-from math import ceil
 from random import shuffle
 
 # import sys
