@@ -2,9 +2,12 @@ from enum import Enum
 from copy import deepcopy
 from typing import List, Tuple
 
-from table_games.common import CValue, Card, Deck
+from ..common import CValue, Card, Deck
+from ..utils.broker import Observer, Broker, NewShoeMessage
+
 
 MAX_PLAYERS = 6
+
 
 class SpotState:
     
@@ -51,6 +54,7 @@ class PlayerSpreadAction(PlayerAction):
         super().__init__()
         self.spots = spots
 
+
 class PlayerPolicy:
 
     @classmethod
@@ -58,7 +62,7 @@ class PlayerPolicy:
         raise NotImplementedError()
     
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: 'Blackjack', player: PlayerState, submit):
         raise NotImplementedError()
     
     @classmethod
@@ -82,7 +86,7 @@ class Ploppy(PlayerPolicy):
         return PlayerSpreadAction(1)
     
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: 'Blackjack', player: PlayerState, submit):
         submit(10)
 
     @classmethod
@@ -103,6 +107,7 @@ class BlackjackState(Enum):
 def hard_total(cards: List[Card]):
     return sum(map(lambda card: min(card._value, 10), cards))
 
+
 def soft_total(cards: List[Card]):
     total = 0
     has_ace = False
@@ -115,6 +120,7 @@ def soft_total(cards: List[Card]):
         total += 10
     
     return total
+
 
 def is_blackjack(cards):
     if len(cards) != 2: return False
@@ -205,7 +211,7 @@ class Blackjack:
 
                     return True
                     
-                playerPolicy.Bet(deepcopy(playerState), submit)
+                playerPolicy.Bet(self, deepcopy(playerState), submit)
 
             self._state = BlackjackState.DEALING
 
@@ -374,13 +380,15 @@ class Blackjack:
                     spot._cards.clear()
                 playerState._spots.clear()
 
-            if (self._deck_count - self._pen) * 52 > len(self._deck):
+            # if (self._deck_count - self._pen) * 52 > len(self._deck):
+            if (self._deck_count * 52 * (1 - self._pen)) > len(self._deck):
                 # print("Shuffling...")
+                Broker.MAIN().post_message(NewShoeMessage())
                 self._deck = Deck.Standard()
                 for _ in range(self._deck_count - 1):
                     self._deck += Deck.Standard()
                 self._deck.shuffle()
-                self._deck.draw()
+                self._deck.draw(silent=True)
 
             self._state = BlackjackState.PREBETTING
 
@@ -404,7 +412,7 @@ class CLIPlayer(PlayerPolicy):
                 print("Invalid entry. Please enter a different value")
 
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: Blackjack, player: PlayerState, submit):
         while True:
             cli_bet = input("Please input the amount you would like to bet for this hand: ")
             cli_bet = int(cli_bet)

@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 import random
+from ..utils import Broker, CardDrawMessage
 
 class CSuit(Enum):
     CLUBS = 1
@@ -60,18 +61,22 @@ class Card:
 
 class Deck:
 
-    def __init__(self, cards: List[Card]) -> None:
+    def __init__(self, cards: List[Card], broker: Broker = None) -> None:
         self._cards = cards
+        self._broker = broker
 
-    def __add__(self, o):
+    def __add__(self, o: 'Deck'):
         new_cards = [*self._cards, *o._cards]
-        return Deck(new_cards)
+        return Deck(new_cards, self._broker)
 
     def shuffle(self):
         random.shuffle(self._cards)
 
-    def draw(self):
-        return self._cards.pop(0)
+    def draw(self, silent=False):
+        card = self._cards.pop(0)
+        if not silent and self._broker: 
+            self._broker.post_message(CardDrawMessage(card))
+        return card
     
     def __len__(self):
         return len(self._cards)
@@ -84,7 +89,7 @@ class Deck:
             for value in CValue:
                 cards.append(Card(suit.value, value.value))
 
-        return Deck(cards)
+        return Deck(cards, Broker.MAIN())
     
 
 suit_map = {

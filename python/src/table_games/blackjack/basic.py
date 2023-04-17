@@ -1,5 +1,5 @@
 from .blackjack import *
-from ..utils import PlayerPolicyMonitor
+from ..utils.policy_monitor import PlayerPolicyMonitor
 
 basic_strategy = {
     'hard': {
@@ -57,7 +57,7 @@ class BasicPolicy(PlayerPolicy):
         submit(PlayerSpreadAction(1))
 
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: Blackjack, player: PlayerState, submit):
         submit(10)
     
     @classmethod
@@ -113,7 +113,7 @@ class TestOutPolicy(PlayerPolicy):
         submit(PlayerSpreadAction(1))
 
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: Blackjack, player: PlayerState, submit):
         submit(10)
     
     @classmethod

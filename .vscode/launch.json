@@ -13,6 +13,14 @@
             "cwd": "${workspaceFolder}/python/src"
         },
         {
+            "name": "AP Sim",
+            "type": "python",
+            "request": "launch",
+            "module": "table_games.blackjack.counting",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}/python/src"
+        },
+        {
             "name": "Basic Strategy Test",
             "type": "python",
             "request": "launch",

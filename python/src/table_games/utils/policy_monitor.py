@@ -1,5 +1,6 @@
 from table_games.common.cards import *
-from table_games.blackjack.blackjack import *
+from table_games.blackjack.blackjack import PlayerPolicy
+from table_games.blackjack.blackjack import PlayerState, SpotState, SpotSplitAction, SpotDoubleAction, SpotHitAction, SpotStandAction
 
 
 class PlayerPolicyMonitor(PlayerPolicy):
@@ -104,7 +105,7 @@ class PlayerPolicyMonitor(PlayerPolicy):
         return cls.observing.PrebetAction(player, submit)
     
     @classmethod
-    def Bet(cls, player: PlayerState, submit):
+    def Bet(cls, game: 'Blackjack', player: PlayerState, submit):
         return cls.observing.Bet(player, submit)
     
     @classmethod
