@@ -1,6 +1,10 @@
 from table_games.common.cards import *
-from table_games.blackjack.blackjack import PlayerPolicy
-from table_games.blackjack.blackjack import PlayerState, SpotState, SpotSplitAction, SpotDoubleAction, SpotHitAction, SpotStandAction
+from table_games.blackjack.blackjack import PlayerPolicy, PlayerState, SpotState, SpotSplitAction, SpotDoubleAction, SpotHitAction, SpotStandAction, soft_total, hard_total
+
+
+class Wrapper:
+    def __init__(self, value) -> None:
+        self.value = value
 
 
 class PlayerPolicyMonitor(PlayerPolicy):
@@ -106,7 +110,7 @@ class PlayerPolicyMonitor(PlayerPolicy):
     
     @classmethod
     def Bet(cls, game: 'Blackjack', player: PlayerState, submit):
-        return cls.observing.Bet(player, submit)
+        return cls.observing.Bet(game, player, submit)
     
     @classmethod
     def InsuranceAction(cls, player: PlayerState) -> bool:
