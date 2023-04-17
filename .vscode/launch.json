@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "table_games.blackjack.basic",
             "justMyCode": true,
-            "cwd": "${workspaceFolder}/python"
+            "cwd": "${workspaceFolder}/python/src"
         },
         {
             "name": "Basic Strategy Test",

@@ -50,6 +50,12 @@ class Card:
         value = self._value if self._value not in value_map else value_map[self._value]
 
         return f"{suit}{value}"
+    
+    @classmethod
+    def FromShort(cls, short: str):
+        suit = suit_map[short[0]]
+        value = value_map[short[1]]
+        return Card(suit, value)
 
 
 class Deck:

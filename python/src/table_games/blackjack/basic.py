@@ -1,4 +1,5 @@
 from .blackjack import *
+from ..utils import PlayerPolicyMonitor
 
 basic_strategy = {
     'hard': {
@@ -158,22 +159,27 @@ if __name__ == "__main__":
 
     # exit()
 
-    game.add_player(BasicPolicy())
+    PlayerPolicyMonitor.observing = BasicPolicy
+    game.add_player(PlayerPolicyMonitor())
+
+    # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
     if args.actions == True:
         for _ in tqdm(range(500)):
-            for idx in range (6 * 100 * (150000 // 500)):
+            # for idx in range (6 * 100 * (150000 // 500)):
+            for idx in range(6 * 100 * 10 * 10):
                 if not game.next():
                     raise Exception()
             
     else:
-        for _ in tqdm(range(6 * 100 * 500 * 20 * 10 * 5 * 3)):
+        for _ in tqdm(range(6 * 100 * 500 * 10)):
             if not game.next():
                 raise Exception()
         
     print('Done!')
+    PlayerPolicyMonitor.ToCsv('basic.csv')
 
     for idx, (playerPolicy, playerState) in enumerate(game._players):
         print(f'Player { idx+1 } won ${ playerState._bank }')
