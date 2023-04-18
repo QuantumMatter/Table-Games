@@ -14,7 +14,7 @@ pub enum CardSuit {
 }
 
 impl CardSuit {
-    pub fn FromShort(short: &str) -> Option<CardSuit> {
+    pub fn from_short(short: &str) -> Option<CardSuit> {
         match short {
             "C" => Some(CardSuit::Clubs),
             "D" => Some(CardSuit::Diamonds),
@@ -25,7 +25,7 @@ impl CardSuit {
     }
 }
 
-#[derive(Debug, EnumIter, Clone, Copy)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
 pub enum CardValue {
     Ace = 1,
     Two = 2,
@@ -43,7 +43,7 @@ pub enum CardValue {
 }
 
 impl CardValue {
-    pub fn FromShort(short: &str) -> Option<CardValue> {
+    pub fn from_short(short: &str) -> Option<CardValue> {
         match short {
             "A" => Some(CardValue::Ace),
             "2" => Some(CardValue::Two),
@@ -70,11 +70,19 @@ pub struct Card {
 }
 
 impl Card {
-    pub fn FromShort(short: &str) -> Option<Card> {
-        let suit = CardSuit::FromShort(&short[1..2])?;
-        let value = CardValue::FromShort(&short[0..1])?;
+    pub fn from_short(short: &str) -> Option<Card> {
+        let suit = CardSuit::from_short(&short[1..2])?;
+        let value = CardValue::from_short(&short[0..1])?;
 
         Some(Card { suit, value })
+    }
+
+    pub fn value(&self) -> CardValue {
+        self.value
+    }
+
+    pub fn suit(&self) -> CardSuit {
+        self.suit
     }
 }
 
@@ -112,7 +120,7 @@ pub struct Deck {
 }
 
 impl Deck {
-    pub fn New() -> Deck {
+    pub fn new() -> Deck {
         let mut cards = Vec::new();
 
         for suit in CardSuit::iter() {
@@ -135,6 +143,10 @@ impl Deck {
 
     pub fn add(self, rhs: Self) -> Self {
         Deck { cards: [&self.cards[..], &rhs.cards[..]].concat() }
+    }
+
+    pub fn len(&self) -> usize {
+        self.cards.len()
     }
 
 }

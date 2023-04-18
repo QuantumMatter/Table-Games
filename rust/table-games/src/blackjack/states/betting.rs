@@ -9,6 +9,10 @@ impl BlackjackStateHandler for BettingStateHandler {
 
         for (p_idx, player) in game.players.iter_mut().enumerate() {
 
+            if player.state.spots.len() == 0 {
+                continue
+            }
+
             let cloned = player.state.clone();
             let policy = &player.policy;
 
@@ -22,13 +26,12 @@ impl BlackjackStateHandler for BettingStateHandler {
                     return false
                 }
 
-                // inner_p.lock().unwrap().state.bet(u128::from(bet));
-                player.state.bet(u128::from(bet));
+                player.state.bet(bet as f32);
 
                 true
             });
 
-            policy.Bet(&cloned, &mut submit);
+            policy.bet(&cloned, &mut submit);
         }
 
         Ok(BlackjackState::Dealing)

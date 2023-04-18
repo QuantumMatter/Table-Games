@@ -2,10 +2,21 @@ use crate::common::{Card};
 
 #[derive(Clone)]
 pub struct SpotState {
-    bet: u32,
-    cards: Vec<Card>,
-    split: bool,
-    insured: bool,
+    pub bet: u32,
+    pub cards: Vec<Card>,
+    pub split: bool,
+    pub insured: bool,
+}
+
+impl SpotState {
+    pub fn new() -> SpotState {
+        SpotState {
+            bet: 0,
+            cards: Vec::new(),
+            split: false,
+            insured: false,
+        }
+    }
 }
 
 pub enum SpotAction {
@@ -16,5 +27,5 @@ pub enum SpotAction {
 }
 
 pub trait SpotPolicy {
-    fn Action(&self, state: &SpotState) -> SpotAction;
+    fn action(&self, state: &SpotState) -> SpotAction;
 }

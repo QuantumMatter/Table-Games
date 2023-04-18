@@ -3,7 +3,7 @@ use table_games::blackjack::{Blackjack, BlackjackConfig, Ploppy};
 fn main() {
     println!("Hello, world!");
 
-    let config = BlackjackConfig::Standard();
+    let config = BlackjackConfig::standard();
     let mut game = Blackjack::new(config);
 
     game.add_player(Box::new(Ploppy {}));

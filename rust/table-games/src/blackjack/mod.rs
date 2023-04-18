@@ -1,5 +1,3 @@
-use std::ops::{Deref, DerefMut};
-
 use crate::common::{Card, Deck};
 
 mod states;
@@ -11,11 +9,11 @@ use policies::*;
 
 pub struct Ploppy {}
 impl PlayerPolicy for Ploppy {
-    fn PrebetAction(&self, _state: &PlayerState) -> PlayerAction {
-        PlayerAction::Spread(1)
+    fn prebet_action<'a>(&self, _state: &PlayerState, submit: &mut Box<dyn FnMut(PlayerAction) -> bool + 'a>) {
+        submit(PlayerAction::Spread(1));
     }
 
-    fn Bet<'a>(&self, state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
+    fn bet<'a>(&self, _state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
 
         println!("Ploppy is betting...");
 
@@ -25,11 +23,11 @@ impl PlayerPolicy for Ploppy {
         }
     }
 
-    fn InsuranceAction(&self, _state: &PlayerState) -> bool {
+    fn insurance_action(&self, _state: &PlayerState) -> bool {
         false
     }
 
-    fn Action(&self, _state: &PlayerState, _spot: &SpotState, submit: Box<dyn FnOnce(SpotAction) -> bool>) {
+    fn action<'a>(&self, _state: &PlayerState, _spot: &SpotState, submit: &mut Box<dyn FnMut(SpotAction) -> bool + 'a>) {
         submit(SpotAction::Stand);
     }
 }
@@ -55,30 +53,30 @@ trait BlackjackStateHandler {
 // #[derive(Clone, Copy)]
 pub struct BlackjackConfig {
     deck_count: usize,
-    h17: bool,
+    // h17: bool,
     pen: f32,
     tmin: u32,
     tmax: u32,
 
     das: bool,
     rsa: bool,
-    spc: u8,
+    // spc: u8,
 
     bj: f32
 }
 
 impl BlackjackConfig {
-    pub fn Standard() -> BlackjackConfig {
+    pub fn standard() -> BlackjackConfig {
         BlackjackConfig {
             deck_count: 6,
-            h17: true,
+            // h17: true,
             pen: 5.0/6.0,
             tmin: 10,
             tmax: 200,
 
             das: true,
             rsa: true,
-            spc: 4,
+            // spc: 4,
 
             bj: 1.5
         }
@@ -92,22 +90,6 @@ pub struct Player {
 
 }
 
-// impl Deref for Player {
-
-//     type Target = Player;
-
-//     fn deref(&self) -> &Self::Target {
-//         &self
-//     }
-// }
-
-// impl DerefMut for Player {
-
-//     fn deref_mut(&mut self) -> &mut Self::Target {
-//         &mut self
-//     }
-// }
-
 pub struct Blackjack {
 
     config: BlackjackConfig,
@@ -120,9 +102,9 @@ pub struct Blackjack {
 
 impl Blackjack {
     pub fn new(config: BlackjackConfig) -> Blackjack {
-        let mut deck = Deck::New();
+        let mut deck = Deck::new();
         for _ in 1..config.deck_count {
-            deck += Deck::New();
+            deck += Deck::new();
         }
 
         let _ = deck.draw();
@@ -160,6 +142,6 @@ impl Blackjack {
     }
 
     pub fn add_player(&mut self, policy: Box<dyn PlayerPolicy>) {
-        self.players.push(Player { policy, state: PlayerState { spots: vec![], bank: 0 } });
+        self.players.push(Player { policy, state: PlayerState { spots: vec![], bank: 0.0 } });
     }
 }
