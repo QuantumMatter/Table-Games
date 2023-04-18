@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "table-games",
+    "thread-pool",
+]
+
+[workspace.dependencies]
+strum = "0.24.1"
+strum_macros = "0.24"
