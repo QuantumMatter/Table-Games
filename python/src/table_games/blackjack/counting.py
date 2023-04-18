@@ -41,7 +41,7 @@ if __name__ == '__main__':
     from ..blackjack import *
     import numpy as np
 
-    hour_count = 1000
+    hour_count = 10000
     rounds_per_hour = 100
     hour_results = np.zeros(hour_count)
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         hour_results[i] = playerState._bank
 
     
-    print(f'Average bank: ${np.mean(hour_results)} +/- ${np.std(hour_results)}')
+    print(f'Average bank: ${np.mean(hour_results)} +/- ${np.std(hour_results):.4f}')
 
     # for player_idx, (playerPolicy, playerState) in enumerate(game._players):
     #     print(f'Player {player_idx} has ${playerState._bank}')

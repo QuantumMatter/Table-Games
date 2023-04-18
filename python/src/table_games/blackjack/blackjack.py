@@ -329,7 +329,7 @@ class Blackjack:
             for playerPolicy, playerState in self._players:
                 for spot in playerState._spots:
                     if is_blackjack(spot._cards): continue
-                    if soft_total(spot._cards) > 21: continue
+                    if hard_total(spot._cards) > 21: continue
                     must_draw = True
             
             if must_draw:
