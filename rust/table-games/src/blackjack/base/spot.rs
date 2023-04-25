@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::common::{Card};
 
 #[derive(Clone)]
@@ -19,6 +21,7 @@ impl SpotState {
     }
 }
 
+#[derive(PartialEq, Debug)]
 pub enum SpotAction {
     Hit,
     Stand,
@@ -28,4 +31,14 @@ pub enum SpotAction {
 
 pub trait SpotPolicy {
     fn action(&self, state: &SpotState) -> SpotAction;
+}
+
+impl Display for SpotState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+
+        let comma: String = ", ".to_string();
+        
+
+        write!(f, "Bet: {}, Cards:[{}]", self.bet, self.cards.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(&comma))
+    }
 }

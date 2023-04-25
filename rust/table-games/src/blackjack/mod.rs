@@ -1,10 +1,11 @@
 use crate::common::{Card, Deck};
 
 mod states;
-mod policies;
+mod base;
+pub mod policies;
 
 use states::*;
-use policies::*;
+use base::*;
 
 
 pub struct Ploppy {}
@@ -27,7 +28,7 @@ impl PlayerPolicy for Ploppy {
         false
     }
 
-    fn action<'a>(&self, _state: &PlayerState, _spot: &SpotState, submit: &mut Box<dyn FnMut(SpotAction) -> bool + 'a>) {
+    fn action<'a>(&self, _state: &PlayerState, _spot: &SpotState, _up_card: Card, submit: &mut Box<dyn FnMut(SpotAction) -> bool + 'a>) {
         submit(SpotAction::Stand);
     }
 }
@@ -106,6 +107,7 @@ impl Blackjack {
         for _ in 1..config.deck_count {
             deck += Deck::new();
         }
+        deck.shuffle();
 
         let _ = deck.draw();
 
@@ -142,6 +144,11 @@ impl Blackjack {
     }
 
     pub fn add_player(&mut self, policy: Box<dyn PlayerPolicy>) {
-        self.players.push(Player { policy, state: PlayerState { spots: vec![], bank: 0.0 } });
+        let state = PlayerState { spots: vec![], bank: 0.0 };
+        self.players.push(Player { policy, state });
+    }
+
+    pub fn get_player(&self, index: usize) -> &PlayerState {
+        &self.players[index].state
     }
 }

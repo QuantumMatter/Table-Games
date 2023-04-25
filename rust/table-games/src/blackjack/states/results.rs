@@ -23,10 +23,10 @@ impl BlackjackStateHandler for ResultsStateHandler {
                 let hard = game.dealer.hard_total();
                 let soft = game.dealer.soft_total();
 
-                if hard > 21 {
+                if hard >= 17 {
                     break;
                 }
-                if soft > 18 {
+                if soft >= 18 {
                     break;
                 }
 

@@ -1,5 +1,3 @@
-mod spot;
-mod player;
+mod basic;
 
-pub use spot::{SpotState, SpotAction, SpotPolicy};
-pub use player::{PlayerState, PlayerAction, PlayerPolicy};
+pub use basic::BasicPolicy;

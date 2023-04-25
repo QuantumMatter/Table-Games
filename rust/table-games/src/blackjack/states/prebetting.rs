@@ -1,11 +1,11 @@
-use crate::blackjack::policies::{SpotState, PlayerAction};
+use crate::blackjack::base::{SpotState, PlayerAction};
 use crate::blackjack::{Blackjack, BlackjackState, BlackjackStateHandler, BlackjackError};
 
 pub struct PrebettingStateHandler {}
 impl BlackjackStateHandler for PrebettingStateHandler {
     fn execute(game: &mut Blackjack) -> Result<BlackjackState, BlackjackError> {
         
-        for (player_idx, player) in game.players.iter_mut().enumerate() {
+        for (_player_idx, player) in game.players.iter_mut().enumerate() {
             
             let cloned = player.state.clone();
             let policy = &player.policy;
@@ -15,8 +15,6 @@ impl BlackjackStateHandler for PrebettingStateHandler {
                 let spots = match action {
                     PlayerAction::Spread(spots) => spots,
                 };
-
-                println!("Player {} spread to {} spots", player_idx, spots);
 
                 for _ in 0..spots {
                     player.state.spots.push(SpotState::new());

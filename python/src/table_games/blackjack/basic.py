@@ -141,11 +141,15 @@ if __name__ == "__main__":
     from tqdm import tqdm
     from argparse import ArgumentParser
     import sys
+    import numpy as np
+    from time import perf_counter
 
     parser = ArgumentParser()
     parser.add_argument('--actions', action='store_true')
 
     args = parser.parse_args(sys.argv[1:])
+
+    t1_start = perf_counter()
 
     game = Blackjack(6, True, 5, 5, 100)
     # game.add_player(TestOutPolicy())
@@ -166,18 +170,42 @@ if __name__ == "__main__":
     # game.add_player(BasicPolicy())
     # game.add_player(BasicPolicy())
 
-    if args.actions == True:
-        for _ in tqdm(range(500)):
-            # for idx in range (6 * 100 * (150000 // 500)):
-            for idx in range(6 * 100 * 10 * 10):
-                if not game.next():
-                    raise Exception()
+    # if args.actions == True:
+    #     for _ in tqdm(range(500)):
+    #         # for idx in range (6 * 100 * (150000 // 500)):
+    #         for idx in range(6 * 100 * 10 * 10):
+    #             if not game.next():
+    #                 raise Exception()
             
-    else:
-        for _ in tqdm(range(6 * 100 * 500 * 10)):
-            if not game.next():
-                raise Exception()
+    # else:
+    #     for _ in tqdm(range(6 * 100 * 500 * 10)):
+    #         if not game.next():
+    #             raise Exception()
+
+    hour_count = 50000
+    rounds_per_hour = 100
+    hour_results = np.zeros(hour_count)
+
+    # for i in tqdm(range(hour_count)):
+    for i in range(hour_count):
         
+        game = Blackjack(6, True, 5/6, 10, 100)
+        game.add_player(BasicPolicy())
+
+        round_count = 0
+        while round_count < rounds_per_hour:
+            assert game.next()
+            if game._state == BlackjackState.CLEANUP:
+                round_count += 1
+
+        playerPolicy, playerState = game._players[0]
+        hour_results[i] = playerState._bank
+
+    
+    t1_stop = perf_counter()
+    print(f'Average bank: ${np.mean(hour_results)} +/- ${np.std(hour_results):.4f}')
+    print(f'Elapsed time: {t1_stop - t1_start:.4f} seconds for {hour_count} hours')
+
     print('Done!')
     PlayerPolicyMonitor.ToCsv('basic.csv')
 

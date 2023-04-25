@@ -7,7 +7,7 @@ impl BlackjackStateHandler for BettingStateHandler {
         let tmin = game.config.tmin;
         let tmax: u32 = game.config.tmax;
 
-        for (p_idx, player) in game.players.iter_mut().enumerate() {
+        for (_p_idx, player) in game.players.iter_mut().enumerate() {
 
             if player.state.spots.len() == 0 {
                 continue
@@ -17,8 +17,6 @@ impl BlackjackStateHandler for BettingStateHandler {
             let policy = &player.policy;
 
             let mut submit: Box<dyn FnMut(u32) -> bool> = Box::new(|bet: u32| {
-                
-                println!("Player {} bet {} ", p_idx, bet);
 
                 if bet > tmax {
                     return false

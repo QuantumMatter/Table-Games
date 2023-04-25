@@ -3,6 +3,10 @@ use strum::IntoEnumIterator;
 use strum_macros::{EnumIter};
 use rand::seq::SliceRandom;
 use std::ops::AddAssign;
+use std::vec::Vec;
+
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 
 
 #[derive(Debug, EnumIter, Clone, Copy)]
@@ -20,7 +24,7 @@ impl CardSuit {
             "D" => Some(CardSuit::Diamonds),
             "H" => Some(CardSuit::Hearts),
             "S" => Some(CardSuit::Spades),
-            _ => None,
+            _ => panic!("Invalid suit: {}", short),
         }
     }
 }
@@ -54,11 +58,11 @@ impl CardValue {
             "7" => Some(CardValue::Seven),
             "8" => Some(CardValue::Eight),
             "9" => Some(CardValue::Nine),
-            "10" => Some(CardValue::Ten),
+            "T" => Some(CardValue::Ten),
             "J" => Some(CardValue::Jack),
             "Q" => Some(CardValue::Queen),
             "K" => Some(CardValue::King),
-            _ => None,
+            _ => panic!("Invalid value: {}", short),
         }
     }
 }
@@ -71,8 +75,8 @@ pub struct Card {
 
 impl Card {
     pub fn from_short(short: &str) -> Option<Card> {
-        let suit = CardSuit::from_short(&short[1..2])?;
-        let value = CardValue::from_short(&short[0..1])?;
+        let suit = CardSuit::from_short(&short[0..1])?;
+        let value = CardValue::from_short(&short[1..2])?;
 
         Some(Card { suit, value })
     }
@@ -115,6 +119,7 @@ impl Display for Card {
     }
 }
 
+#[derive(Debug)]
 pub struct Deck {
     cards: Vec<Card>,
 }
@@ -132,8 +137,15 @@ impl Deck {
         Deck { cards }
     }
 
+    pub fn from_cards(cards: Vec<Card>) -> Deck {
+        Deck { cards }
+    }
+
     pub fn shuffle(&mut self) {
-        let mut rng = rand::thread_rng();
+        // let mut rng = rand::thread_rng();
+        let mut rng = StdRng::from_entropy();
+        self.cards.shuffle(&mut rng);
+        self.cards.reverse();
         self.cards.shuffle(&mut rng);
     }
 
@@ -155,4 +167,19 @@ impl AddAssign for Deck {
     fn add_assign(&mut self, rhs: Self) {
         self.cards.extend(rhs.cards);
     }
+}
+
+#[test]
+fn test_deck() {
+    // println!("{}", Deck::new().cards.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(", "));
+    assert_eq!(52, Deck::new().len());
+
+    let mut two_decks = Deck::new();
+    two_decks += Deck::new();
+    assert_eq!(104, two_decks.len());
+
+    two_decks.shuffle();
+    assert_eq!(104, two_decks.len());
+    
+    println!("{}", two_decks.cards.iter().map(|c| c.to_string()).collect::<Vec<String>>().join(", "));
 }
