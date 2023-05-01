@@ -8,6 +8,8 @@ use std::vec::Vec;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 
+use crate::utils::{MAIN_BROKER, Message};
+
 
 #[derive(Debug, EnumIter, Clone, Copy)]
 pub enum CardSuit {
@@ -149,8 +151,18 @@ impl Deck {
         self.cards.shuffle(&mut rng);
     }
 
-    pub fn draw(&mut self) -> Option<Card> {
-        self.cards.pop()
+    pub fn draw(&mut self, silent: bool) -> Option<Card> {
+
+        let card = self.cards.pop();
+
+        if !silent {
+            match card {
+                Some(c) => MAIN_BROKER.lock().unwrap().post(Message::CardDrawn(c)),
+                None => (),
+            }
+        }
+
+        card
     }
 
     pub fn add(self, rhs: Self) -> Self {

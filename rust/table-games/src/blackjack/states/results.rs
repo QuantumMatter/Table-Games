@@ -30,7 +30,7 @@ impl BlackjackStateHandler for ResultsStateHandler {
                     break;
                 }
 
-                game.dealer.push(game.deck.draw().expect("No cards left in deck"));
+                game.dealer.push(game.deck.draw(false).expect("No cards left in deck"));
             }
         }
 

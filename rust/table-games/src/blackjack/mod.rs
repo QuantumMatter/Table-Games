@@ -1,3 +1,5 @@
+use std::{rc::Rc, sync::Mutex, cell::RefCell};
+
 use crate::common::{Card, Deck};
 
 mod states;
@@ -14,7 +16,7 @@ impl PlayerPolicy for Ploppy {
         submit(PlayerAction::Spread(1));
     }
 
-    fn bet<'a>(&self, _state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
+    fn bet<'a>(&self, _deck: &Deck, _state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
 
         println!("Ploppy is betting...");
 
@@ -86,7 +88,9 @@ impl BlackjackConfig {
 
 pub struct Player {
 
-    policy: Box<dyn PlayerPolicy>,
+    // policy: Rc<Mutex<dyn PlayerPolicy>>,
+    // policy: Box<dyn PlayerPolicy>,
+    policy: Rc<RefCell<dyn PlayerPolicy>>,
     state: PlayerState,
 
 }
@@ -109,7 +113,7 @@ impl Blackjack {
         }
         deck.shuffle();
 
-        let _ = deck.draw();
+        let _ = deck.draw(true);
 
         Blackjack {
             config,
@@ -143,7 +147,7 @@ impl Blackjack {
         self.state
     }
 
-    pub fn add_player(&mut self, policy: Box<dyn PlayerPolicy>) {
+    pub fn add_player(&mut self, policy: Rc<RefCell<dyn PlayerPolicy>>) {
         let state = PlayerState { spots: vec![], bank: 0.0 };
         self.players.push(Player { policy, state });
     }

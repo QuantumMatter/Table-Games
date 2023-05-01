@@ -7,7 +7,8 @@ impl BlackjackStateHandler for BettingStateHandler {
         let tmin = game.config.tmin;
         let tmax: u32 = game.config.tmax;
 
-        for (_p_idx, player) in game.players.iter_mut().enumerate() {
+        for p_idx in 0..game.players.len() {
+            let player = game.players.get_mut(p_idx).unwrap();
 
             if player.state.spots.len() == 0 {
                 continue
@@ -29,13 +30,10 @@ impl BlackjackStateHandler for BettingStateHandler {
                 true
             });
 
-            policy.bet(&cloned, &mut submit);
+            policy.borrow().bet(&game.deck, &cloned, &mut submit);
         }
 
         Ok(BlackjackState::Dealing)
     }
 }
 
-
-// I can fix the above lifetime issue by changing the following:
-//

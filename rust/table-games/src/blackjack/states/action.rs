@@ -22,7 +22,7 @@ impl BlackjackStateHandler for ActionStateHandler {
                 if player.state.get_spots()[spot_idx as usize].cards.len() == 1 {
                     player.state.get_spots()[spot_idx as usize]
                         .cards
-                        .push(game.deck.draw().expect("No cards left in deck"));
+                        .push(game.deck.draw(false).expect("No cards left in deck"));
                 }
 
                 let split_aces = player.state.get_spots()[spot_idx as usize].split
@@ -71,7 +71,7 @@ impl BlackjackStateHandler for ActionStateHandler {
                                 SpotAction::Hit => {
                                     player.state.get_spots()[spot_idx as usize]
                                         .cards
-                                        .push(game.deck.draw().expect("No cards left in deck"));
+                                        .push(game.deck.draw(false).expect("No cards left in deck"));
                                     if player.state.get_spots()[spot_idx as usize].cards.hard_total() > 21 {
                                         done = true;
                                     }
@@ -88,7 +88,7 @@ impl BlackjackStateHandler for ActionStateHandler {
 
                                     player.state.get_spots()[spot_idx as usize]
                                         .cards
-                                        .push(game.deck.draw().expect("No cards left in deck"));
+                                        .push(game.deck.draw(false).expect("No cards left in deck"));
                                     player.state.bank -=
                                         player.state.get_spots()[spot_idx as usize].bet as f32;
                                     player.state.get_spots()[spot_idx as usize].bet *= 2;
@@ -135,7 +135,11 @@ impl BlackjackStateHandler for ActionStateHandler {
                             }
                         });
 
-                    policy.action(&cloned, &cloned_spot, game.dealer[0], &mut submit);
+                    // policy.action(&cloned, &cloned_spot, game.dealer[0], &mut submit);
+                    // policy.lock().unwrap().action(&cloned, &cloned_spot, game.dealer[0], &mut submit);
+                
+                    // let a = policy.action(&cloned, &cloned_spot, game.dealer[0], &mut submit);
+                    policy.borrow().action(&cloned, &cloned_spot, game.dealer[0], &mut submit);
                 }
 
                 spot_idx += 1;

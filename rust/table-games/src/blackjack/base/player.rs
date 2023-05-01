@@ -1,4 +1,4 @@
-use crate::{blackjack::base::spot::{SpotState, SpotAction}, common::Card};
+use crate::{blackjack::{base::spot::{SpotState, SpotAction}, Blackjack}, common::{Card, Deck}};
 
 #[derive(Clone)]
 pub struct PlayerState {
@@ -29,7 +29,7 @@ pub enum PlayerAction {
 
 pub trait PlayerPolicy: 'static {
     fn prebet_action<'a>(&self, state: &PlayerState, submit: &mut Box<dyn FnMut(PlayerAction) -> bool + 'a>);
-    fn bet<'a>(&self, state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>);
+    fn bet<'a>(&self, game: &Deck, state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>);
     fn insurance_action(&self, state: &PlayerState) -> bool;
     fn action<'a>(&self, state: &PlayerState, spot: &SpotState, up_card: Card, submit: &mut Box<dyn FnMut(SpotAction) -> bool + 'a>);
 }

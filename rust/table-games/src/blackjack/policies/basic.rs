@@ -1,4 +1,4 @@
-use std::{collections::HashMap, cmp::{min, max}};
+use std::{collections::HashMap, cmp::{min, max}, rc::Rc, sync::Mutex, cell::RefCell};
 
 use crate::{blackjack::{base::{PlayerPolicy, PlayerAction, PlayerState, SpotState, SpotAction}, Blackjack, BlackjackConfig, BlackjackState}, utils::Hand, common::{Card, Deck}};
 
@@ -78,7 +78,7 @@ impl PlayerPolicy for BasicPolicy {
         submit(PlayerAction::Spread(1));
     }
 
-    fn bet<'a>(&self, _state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
+    fn bet<'a>(&self, _deck: &Deck, _state: &PlayerState, submit: &mut Box<dyn FnMut(u32) -> bool + 'a>) {
         submit(10);
     }
 
@@ -165,7 +165,8 @@ fn simple_test_basic_strategy() {
     let make_test = Box::new(|player_hand: Vec<Card>, up_card: Card, expected: SpotAction| {
         
         let mut game = Blackjack::new(BlackjackConfig::standard());
-        game.add_player(Box::new(BasicPolicy::new()));
+        // game.add_player(Box::new(BasicPolicy::new()));
+        game.add_player(Rc::new(RefCell::new(BasicPolicy::new())));
 
         game.players[0].state.spots.push(SpotState::new());
         game.players[0].state.spots[0].cards = player_hand;
@@ -528,7 +529,9 @@ fn test_basic() {
     let mut expectations: Vec<f32> = vec![0.; 6];
 
     for _ in 0..6 {
-        game.add_player(Box::new(BasicPolicy::new()));
+        // game.add_player(Box::new(BasicPolicy::new()));
+        // game.add_player(Box::new(BasicPolicy::new()));
+        game.add_player(Rc::new(RefCell::new(BasicPolicy::new())));
     }
 
     for (case_idx, case) in cases.iter().enumerate() {

@@ -20,7 +20,7 @@ impl BlackjackStateHandler for CleanupStateHandler {
                 game.deck += Deck::new();
             }
             game.deck.shuffle();
-            game.deck.draw();
+            game.deck.draw(true);
         }
 
         Ok(BlackjackState::Prebetting)

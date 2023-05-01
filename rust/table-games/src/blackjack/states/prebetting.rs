@@ -23,7 +23,7 @@ impl BlackjackStateHandler for PrebettingStateHandler {
                 true
             });
 
-            policy.prebet_action(&cloned, &mut submit);
+            policy.borrow().prebet_action(&cloned, &mut submit);
         }
 
         Ok(BlackjackState::Betting)
